@@ -51,6 +51,7 @@
 
 .results__thead {
   background-color: #590010;
+  cursor: pointer;
   color: white;
 }
 
