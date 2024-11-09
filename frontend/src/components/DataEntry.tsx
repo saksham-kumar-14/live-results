@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Papa from 'papaparse';
 import axios from 'axios';
 import "../styles/DataEntry.css";
+import { BASE_URL } from '../utils.ts/constants';
 
 interface Participant {
   id?: number;
@@ -11,8 +12,7 @@ interface Participant {
 }
 
 const DataEntry: React.FC = () => {
-  const { event } = useParams<{ event: string }>();
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  const { event } = useParams<{ event: string }>(); const [participants, setParticipants] = useState<Participant[]>([]);
   const [name, setName] = useState('');
   const [solves, setSolves] = useState<string[]>([]);
   const [numSolves, setNumSolves] = useState(3); // Default number of solves
@@ -32,7 +32,7 @@ const DataEntry: React.FC = () => {
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
-        const response = await axios.get(`http://10.102.71.103:5000/participants?event=${event}`);
+        const response = await axios.get(`${BASE_URL}?event=${event}`);
         setParticipants(response.data);
       } catch (error) {
         console.error('Error fetching participants:', error);
@@ -45,7 +45,7 @@ const DataEntry: React.FC = () => {
     if (name && solves.every(solve => solve)) {
       const newParticipant: Participant = { name, solves };
       try {
-        const response = await axios.post(`http://10.102.71.103:5000/participants?event=${event}`, newParticipant);
+        const response = await axios.post(`${BASE_URL}?event=${event}`, newParticipant);
         setParticipants([...participants, response.data]);
         setName('');
         setSolves(Array(numSolves).fill('')); // Reset solves based on selected number
@@ -67,7 +67,7 @@ const DataEntry: React.FC = () => {
           const importedParticipants = results.data as Participant[];
           try {
             await Promise.all(importedParticipants.map(async (participant) => {
-              const response = await axios.post(`http://10.102.71.103:5000/participants?event=${event}`, participant);
+              const response = await axios.post(`${BASE_URL}?event=${event}`, participant);
               return response.data;
             }));
             const updatedParticipants = [...participants, ...importedParticipants];
@@ -90,7 +90,6 @@ const DataEntry: React.FC = () => {
     updatedSolves[index] = value;
     setSolves(updatedSolves);
   };
-
   return (
     <div className='data-entry'>
       <h2>Data Entry for {event}</h2>
