@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import "../styles/Results.css";
+import { BASE_URL } from '../utils.ts/constants';
 
 interface Participant {
   id?: number; // Optional ID for the participant
@@ -18,7 +19,7 @@ const Results: React.FC = () => {
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
-        const response = await axios.get(`http://10.102.71.103:5000/participants?event=${event}`);
+        const response = await axios.get(`${BASE_URL}?event=${event}`); // Use the variable here
         setParticipants(response.data);
       } catch (error) {
         console.error('Error fetching participants:', error);
@@ -138,7 +139,7 @@ const Results: React.FC = () => {
                 Best {sortField === 'best' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
               <th className="results__header-cell" onClick={() => handleSort('mean')}>
-                Mean {sortField === 'mean' && (sortOrder === 'asc' ? '↑' : '↓')}
+                Mo3/Ao5 {sortField === 'mean' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
             </tr>
           </thead>
