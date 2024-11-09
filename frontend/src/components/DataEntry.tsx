@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Papa from 'papaparse';
 import axios from 'axios';
+import "../styles/DataEntry.css";
 
 interface Participant {
   id?: number;
@@ -91,9 +92,10 @@ const DataEntry: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Data Entry for {event.toUpperCase()}</h2>
+    <div className='data-entry'>
+      <h2>Data Entry for {event}</h2>
       <input
+        className='data-entry__input'
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -101,6 +103,7 @@ const DataEntry: React.FC = () => {
       />
       {Array.from({ length: numSolves }).map((_, index) => (
         <input
+          className='data-entry__input'
           key={index}
           type="text"
           value={solves[index]}
@@ -109,12 +112,17 @@ const DataEntry: React.FC = () => {
         />
       ))}
       <button onClick={handleAddParticipant}>Add Participant</button>
-      <input type="file" accept=".csv" onChange={handleImportCSV} />
+      <input
+        className='data-entry__file-input'
+        type="file"
+        accept=".csv"
+        onChange={handleImportCSV}
+      />
       <h3>Current Participants</h3>
       <ul>
         {participants.map((participant, index) => (
           <li key={index}>
-            {participant.name}: {participant.solves.join(', ')}
+            {index + 1}. {participant.name}: {participant.solves.join(', ')}
           </li>
         ))}
       </ul>

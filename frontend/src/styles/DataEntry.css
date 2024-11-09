@@ -1,0 +1,24 @@
+.data-entry {
+  padding: 20px;
+  background-color: #000;
+  border-radius: 8px;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.data-entry__input {
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.data-entry__file-input {
+  margin: 20px;
+}
