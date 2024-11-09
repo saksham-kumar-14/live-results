@@ -12,6 +12,8 @@ interface Participant {
 const Results: React.FC = () => {
   const { event } = useParams<{ event: string }>();
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [sortField, setSortField] = useState<string>('mean'); // Default sort field
+  const [sortOrder, setSortOrder] = useState<string>('asc'); // Default sort order
 
   useEffect(() => {
     const fetchParticipants = async () => {
@@ -46,12 +48,50 @@ const Results: React.FC = () => {
     return 'N/A';
   };
 
+
+  const handleSort = (field: string) => {
+    const newSortOrder = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortField(field);
+    setSortOrder(newSortOrder);
+  };
+
+  const sortedParticipants = [...participants].sort((a, b) => {
+    let aValue, bValue;
+
+    switch (sortField) {
+      case 'name':
+        aValue = a.name.toLowerCase();
+        bValue = b.name.toLowerCase();
+        break;
+      case 'best':
+        aValue = calculateBestSolve(a.solves);
+        bValue = calculateBestSolve(b.solves);
+        break;
+      case 'mean':
+        aValue = calculateMeanSolve(a.solves);
+        bValue = calculateMeanSolve(b.solves);
+        break;
+      default:
+        aValue = a.name.toLowerCase();
+        bValue = b.name.toLowerCase();
+    }
+
+    // Handle sorting for numeric values
+    if (!isNaN(Number(aValue)) && !isNaN(Number(bValue))) {
+      return sortOrder === 'asc' ? Number(aValue) - Number(bValue) : Number(bValue) - Number(aValue);
+    }
+
+    // Handle sorting for string values
+    if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   return (
     <div className="results">
       <header className="results__header">
         <nav className="results__nav">
           <ul className="results__nav-list">
-            {/* Replace 'event1', 'event2', etc. with actual event identifiers */}
             <li className="results__nav-item">
               <Link to="/results/3x3" className="results__nav-link">
                 <button type='button'> 3x3 </button>
@@ -88,14 +128,22 @@ const Results: React.FC = () => {
           <thead className="results__thead">
             <tr className="results__header-row">
               <th className="results__header-cell">S.No.</th>
-              <th className="results__header-cell">Participant</th>
-              <th className="results__header-cell">Solves</th>
-              <th className="results__header-cell">Best</th>
-              <th className="results__header-cell">Mean</th>
+              <th className="results__header-cell" onClick={() => handleSort('name')}>
+                Participant {sortField === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+              </th>
+              <th className="results__header-cell">
+                Solves
+              </th>
+              <th className="results__header-cell" onClick={() => handleSort('best')}>
+                Best {sortField === 'best' && (sortOrder === 'asc' ? '↑' : '↓')}
+              </th>
+              <th className="results__header-cell" onClick={() => handleSort('mean')}>
+                Mean {sortField === 'mean' && (sortOrder === 'asc' ? '↑' : '↓')}
+              </th>
             </tr>
           </thead>
           <tbody className="results__tbody">
-            {participants.map((participant, index) => (
+            {sortedParticipants.map((participant, index) => (
               <tr key={index} className="results__row">
                 <td className="results__cell">{index + 1}</td> {/* Serial number */}
                 <td className="results__cell">{participant.name}</td>
