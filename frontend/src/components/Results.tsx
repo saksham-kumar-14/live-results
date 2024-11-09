@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+import "../styles/Results.css";
 
 interface Participant {
   id?: number; // Optional ID for the participant
@@ -46,36 +47,68 @@ const Results: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Results for {event.toUpperCase()}</h2>
+    <div className="results">
+      <header className="results__header">
+        <nav className="results__nav">
+          <ul className="results__nav-list">
+            {/* Replace 'event1', 'event2', etc. with actual event identifiers */}
+            <li className="results__nav-item">
+              <Link to="/results/3x3" className="results__nav-link">
+                <button type='button'> 3x3 </button>
+              </Link>
+            </li>
+            <li className="results__nav-item">
+              <Link to="/results/2x2" className="results__nav-link">
+                <button type='button'> 2x2 </button>
+              </Link>
+            </li>
+            <li className="results__nav-item">
+              <Link to="/results/4x4" className="results__nav-link">
+                <button type='button'> 4x4 </button>
+              </Link>
+            </li>
+            <li className="results__nav-item">
+              <Link to="/results/pyra" className="results__nav-link">
+                <button type='button'> Pyraminx </button>
+              </Link>
+            </li>
+            <li className="results__nav-item">
+              <Link to="/results/3x3oh" className="results__nav-link">
+                <button type='button'> 3x3 One-Handed </button>
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </header>
+      <h2 className="results__title">Results for {event.toUpperCase()}</h2>
       {participants.length === 0 ? (
-        <p>No results available.</p>
+        <p className="results__no-data">No results available.</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Serial No.</th>
-              <th>Participant</th>
-              <th>Solves</th>
-              <th>Best Solve</th>
-              <th>Mean Solve</th>
+        <table className="results__table">
+          <thead className="results__thead">
+            <tr className="results__header-row">
+              <th className="results__header-cell">S.No.</th>
+              <th className="results__header-cell">Participant</th>
+              <th className="results__header-cell">Solves</th>
+              <th className="results__header-cell">Best</th>
+              <th className="results__header-cell">Mean</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="results__tbody">
             {participants.map((participant, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td> {/* Serial number */}
-                <td>{participant.name}</td>
-                <td>
+              <tr key={index} className="results__row">
+                <td className="results__cell">{index + 1}</td> {/* Serial number */}
+                <td className="results__cell">{participant.name}</td>
+                <td className="results__cell">
                   {participant.solves.map((solve, idx) => (
-                    <span key={idx}>
+                    <span key={idx} className="results__solve">
                       {solve}
                       {idx < participant.solves.length - 1 ? ', ' : ''}
                     </span>
                   ))}
                 </td>
-                <td>{calculateBestSolve(participant.solves)}</td>
-                <td>{calculateMeanSolve(participant.solves)}</td>
+                <td className="results__cell">{calculateBestSolve(participant.solves)}</td>
+                <td className="results__cell">{calculateMeanSolve(participant.solves)}</td>
               </tr>
             ))}
           </tbody>
