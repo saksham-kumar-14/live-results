@@ -48,6 +48,7 @@ const db = new sqlite3.Database(path.join(__dirname, 'participants.db'), (err) =
 
 // Function to get the table name based on the event
 const getTableName = (event) => {
+  console.log('Received event:', event);
   switch (event) {
     case '3x3':
       return 'participants_3x3';
@@ -60,7 +61,7 @@ const getTableName = (event) => {
     case 'pyra':
       return 'participants_pyra';
     default:
-      throw new Error('Invalid event type');
+      throw new Error(`Invalid event type ${event}`);
   }
 };
 
@@ -91,6 +92,7 @@ app.post('/participants', (req, res) => {
   db.run(`INSERT INTO ${tableName} (name, solves) VALUES (?, ?)`, [name, JSON.stringify(solves)], function(err) {
     if (err) {
       res.status(500).json({ error: err.message });
+      console.error('Database error:', err.message);
     } else {
       res.json({ id: this.lastID, name, solves });
     }
