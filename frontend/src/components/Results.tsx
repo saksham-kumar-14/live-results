@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import "../styles/Results.css";
-import { BASE_URL } from '../utils.ts/constants';
+import { BASE_URL } from '../utils/constants';
 
 interface Participant {
   id?: number; // Optional ID for the participant

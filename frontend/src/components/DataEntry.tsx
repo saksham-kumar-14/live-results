@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Papa from 'papaparse';
 import axios from 'axios';
 import "../styles/DataEntry.css";
-import { BASE_URL } from '../utils.ts/constants';
+import { BASE_URL } from '../utils/constants';
 
 interface Participant {
   id?: number;
@@ -44,6 +44,8 @@ const DataEntry: React.FC = () => {
   const handleAddParticipant = async () => {
     if (name && solves.every(solve => solve)) {
       const newParticipant: Participant = { name, solves };
+      console.log(event);
+      console.log(newParticipant);
       try {
         const response = await axios.post(`${BASE_URL}?event=${event}`, newParticipant);
         setParticipants([...participants, response.data]);
@@ -58,13 +60,17 @@ const DataEntry: React.FC = () => {
     }
   };
 
-  const handleImportCSV = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleImportCSV = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       Papa.parse(file, {
-        header: true,
+        // header: true,
         complete: async (results) => {
-          const importedParticipants = results.data as Participant[];
+          const importedParticipants = results.data.map(row => ({
+            name: row.name,
+            solves: row.solves.split(',').map(Number)
+          }))
+          // const importedParticipants = results.data as Participant[];
           try {
             await Promise.all(importedParticipants.map(async (participant) => {
               const response = await axios.post(`${BASE_URL}?event=${event}`, participant);
@@ -74,12 +80,12 @@ const DataEntry: React.FC = () => {
             setParticipants(updatedParticipants);
           } catch (error) {
             console.error('Error importing participants:', error);
-            alert('Error importing participants. Please check the format.');
+            alert('Server error importing participants. Please check the format.');
           }
         },
         error: (error) => {
           console.error('Error parsing CSV:', error);
-          alert('Error parsing CSV file. Please check the format.');
+          alert('Parse Error parsing CSV file. Please check the format.');
         },
       });
     }
@@ -117,16 +123,16 @@ const DataEntry: React.FC = () => {
         accept=".csv"
         onChange={handleImportCSV}
       />
-      <h3>Current Participants</h3>
-      <ul>
-        {participants.map((participant, index) => (
-          <li key={index}>
-            {index + 1}. {participant.name}: {participant.solves.join(', ')}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
 
 export default DataEntry
+// <h3>Current Participants</h3>
+// <ul>
+//   {participants.map((participant, index) => (
+//     <li key={index}>
+//       {index + 1}. {participant.name}: {participant.solves.join(', ')}
+//     </li>
+//   ))}
+// </ul>
