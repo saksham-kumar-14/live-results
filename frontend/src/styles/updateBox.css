@@ -1,0 +1,53 @@
+.container{
+    position: fixed;
+    background: transparent;
+    width: 100vw;
+    height: 100vh;
+}
+
+.sub-container{
+    padding: 6px;
+    border-radius: 16px;
+    background-color: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-container button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    color: #1a1a1a;
+    background-color: white;
+    cursor: pointer;
+    border-color: black;
+    transition: border-color 0.25s;
+}
+.sub-container button:hover {
+    border-color: #7f82b8;
+}
+.sub-container  button:focus,
+.sub-container button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
+
+.close-btn-container{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.input-container input{
+    width: 60vw;
+    margin: 10px;
+}
+@media only screen and max (max-width: 768px) {
+    .input-container input{
+        width: 90vw;
+    }
+}

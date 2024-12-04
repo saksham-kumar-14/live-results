@@ -2,15 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import "../styles/Results.css";
-import { BASE_URL } from '../utils/constants';
+import { BASE_URL, DELETE_URL } from '../utils/constants';
+import UpdateBox from './UpdateBox';
 
 interface Participant {
   id?: number; // Optional ID for the participant
   name: string;
   solves: string[];
 }
+interface ResultsProps{
+  isAuthenticated: Boolean
+}
 
-const Results: React.FC = () => {
+const Results: React.FC<ResultsProps> = ({ isAuthenticated }) => {
   const { event } = useParams<{ event: string }>();
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [sortField, setSortField] = useState<string>('mean'); // Default sort field
@@ -88,6 +92,32 @@ const Results: React.FC = () => {
     return 0;
   });
 
+  // Update and delete operations
+  const [showUpdateBox, setUpdateBox] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState({});
+
+  const handleDeleteParticipant = async (participantID:number) => {
+    if (participantID) {
+      const participant = {
+        "id" : participantID,
+      }
+      try {
+        const response = await axios.post(`${DELETE_URL}?event=${event}`, participant);
+        const data = await response.data;
+        if (!data.deleted) {
+          alert("Error deleting participant. Please try again.")
+        }else{
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error('Error updating participant:', error);
+        alert('Error updating participant. Please try again.');
+      }
+    } else {
+      alert('Please select Id');
+    }
+  }
+
   return (
     <div className="results">
       <header className="results__header">
@@ -121,6 +151,11 @@ const Results: React.FC = () => {
           </ul>
         </nav>
       </header>
+
+      {showUpdateBox && isAuthenticated && 
+       <UpdateBox setUpdateBox={setUpdateBox} entry={selectedEntry} event={event} />
+      }
+
       <h2 className="results__title">Results for {event.toUpperCase()}</h2>
       {participants.length === 0 ? (
         <p className="results__no-data">No results available.</p>
@@ -141,6 +176,17 @@ const Results: React.FC = () => {
               <th className="results__header-cell" onClick={() => handleSort('mean')}>
                 Mo3/Ao5 {sortField === 'mean' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
+
+              {isAuthenticated &&
+              <>
+                <th className="results__header-cell">
+                  Delete
+                </th>
+                <th className="results__header-cell">
+                  Edit
+                </th>
+              </>
+              }
             </tr>
           </thead>
           <tbody className="results__tbody">
@@ -158,6 +204,22 @@ const Results: React.FC = () => {
                 </td>
                 <td className="results__cell">{calculateBestSolve(participant.solves)}</td>
                 <td className="results__cell">{calculateMeanSolve(participant.solves)}</td>
+                
+                {isAuthenticated && 
+                <>
+                  <td className='results__cell'>
+                    <button onClick={()=>{
+                      handleDeleteParticipant(participant.id);
+                    }}>Delete</button>
+                  </td>
+                  <td>
+                    <button onClick={()=>{
+                      setUpdateBox(true);
+                      setSelectedEntry(participant);
+                    }} className='results__cell'>UpdateUser</button>
+                  </td>
+                </>
+                }
               </tr>
             ))}
           </tbody>

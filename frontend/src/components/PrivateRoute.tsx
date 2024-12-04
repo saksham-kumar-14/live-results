@@ -3,10 +3,11 @@ import { Navigate } from 'react-router-dom';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
+  isAuthenticated: Boolean;
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('authenticated') === 'true';
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ isAuthenticated, children }) => {
 
   return isAuthenticated ? (
     <>{children}</>

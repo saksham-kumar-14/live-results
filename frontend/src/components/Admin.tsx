@@ -1,32 +1,45 @@
 import React, { useState } from 'react';
-import "../styles/Admin.css";
+import "../styles/Admin.css"
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { ADMIN_AUTH_URL } from '../utils/constants';
+import '../styles/Admin.css'
 
-const Admin: React.FC = () => {
+interface AdminProps {
+  isAuthenticated: Boolean;
+  setIsAuthenticated: Function;
+}
+
+const Admin: React.FC<AdminProps> = ({isAuthenticated, setIsAuthenticated}) => {
   const [password, setPassword] = useState('');
-  const [authenticated, setAuthenticated] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent the default form submission behavior
-    if (password === 'arghykadecimal') { // Replace with your desired password
-      setAuthenticated(true);
-      localStorage.setItem('authenticated', 'true');
+
+    const res = await axios.post(`${ADMIN_AUTH_URL}`, {
+      password: password,
+    });
+    const data = await res.data;
+    if(data.authenticated) {
+      setIsAuthenticated(true);
       setError('');
-    } else {
+      localStorage.setItem('passwordToken', data.passwordToken);
+    }else{
       setError('Incorrect password');
+      setIsAuthenticated(false);
     }
   };
 
   const handleLogout = () => {
-    setAuthenticated(false);
-    localStorage.removeItem('authenticated');
+    setIsAuthenticated(false);
+    localStorage.removeItem('passwordToken');
   };
 
   return (
     <div className='container'>
       {
-        authenticated || localStorage.getItem('authenticated') === 'true' ? (
+        isAuthenticated ? (
           <>
             <div className="welcome-container">
               <h2>Welcome, Admin!</h2>

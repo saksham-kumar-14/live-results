@@ -12,7 +12,8 @@ interface Participant {
 }
 
 const DataEntry: React.FC = () => {
-  const { event } = useParams<{ event: string }>(); const [participants, setParticipants] = useState<Participant[]>([]);
+  const { event } = useParams<{ event: string }>();
+  const [participants, setParticipants] = useState<Participant[]>([]);
   const [name, setName] = useState('');
   const [solves, setSolves] = useState<string[]>([]);
   const [numSolves, setNumSolves] = useState(3); // Default number of solves
@@ -42,6 +43,8 @@ const DataEntry: React.FC = () => {
   }, [event]);
 
   const handleAddParticipant = async () => {
+    console.log(solves);
+    console.log(typeof(solves))
     if (name && solves.every(solve => solve)) {
       const newParticipant: Participant = { name, solves };
       console.log(event);
@@ -59,6 +62,7 @@ const DataEntry: React.FC = () => {
       alert('Please enter a name and all solve times.');
     }
   };
+
 
   const handleImportCSV = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
