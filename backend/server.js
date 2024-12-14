@@ -6,7 +6,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const PORT = 3001;
+const PORT = 5000;
 
 // password and encryption key
 const ADMIN_PASSWORD = "password";
