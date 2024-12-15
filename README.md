@@ -1,3 +1,4 @@
+
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
 <!--
@@ -126,7 +127,7 @@ and follow any of the given resources
 * install dependencies and set up backend
   ```sh
   cd backend/
-  npm install
+  pnpm install
   node server.js
   ```
 * same for frontend
