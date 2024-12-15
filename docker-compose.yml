@@ -1,0 +1,55 @@
+version: '1.1'
+
+services:
+  server:
+    build:
+      context: ./backend
+      dockerfile: DOCKERFILE
+    image: myapp-server
+    container_name: myapp-node-server
+    command: /app/node_modules/.bin/node server.js
+    volumes:
+      - ./server/:/app
+      - /app/node_modules
+    ports:
+      - "5001:5001"
+    depends_on:
+      - sqlite 
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+
+  sqlite:
+    image: nouchka/sqlite3:latest
+    volumes:
+      - data-volume:/data/db
+    environment:
+      - SQLITE3_DB=db.sqlite3
+
+  client:
+    build:
+      context: ./frontend
+      dockerfile: DOCKERFILE 
+    image: myapp-client
+    container_name: myapp-react-client
+    command: pnpm run dev 
+    volumes:
+      - ./client/:/app
+      - /app/node_modules
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+    data-volume:
+    node_modules:
+    web-root:
+      driver: local
