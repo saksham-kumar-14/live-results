@@ -4,6 +4,8 @@ import axios from 'axios';
 import "../styles/Results.css";
 import { BASE_URL, DELETE_URL } from '../utils/constants';
 import UpdateBox from './UpdateBox';
+import DeleteConfirmation from './deleteConfirmation';
+import { MdDelete } from "react-icons/md";
 
 interface Participant {
   id?: number; // Optional ID for the participant
@@ -94,29 +96,8 @@ const Results: React.FC<ResultsProps> = ({ isAuthenticated }) => {
 
   // Update and delete operations
   const [showUpdateBox, setUpdateBox] = useState(false);
+  const [showDeleteBox, setDeleteBox] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState({});
-
-  const handleDeleteParticipant = async (participantID:number) => {
-    if (participantID) {
-      const participant = {
-        "id" : participantID,
-      }
-      try {
-        const response = await axios.post(`${DELETE_URL}?event=${event}`, participant);
-        const data = await response.data;
-        if (!data.deleted) {
-          alert("Error deleting participant. Please try again.")
-        }else{
-          window.location.reload();
-        }
-      } catch (error) {
-        console.error('Error updating participant:', error);
-        alert('Error updating participant. Please try again.');
-      }
-    } else {
-      alert('Please select Id');
-    }
-  }
 
   return (
     <div className="results">
@@ -153,7 +134,11 @@ const Results: React.FC<ResultsProps> = ({ isAuthenticated }) => {
       </header>
 
       {showUpdateBox && isAuthenticated && 
-       <UpdateBox setUpdateBox={setUpdateBox} entry={selectedEntry} event={event} />
+        <UpdateBox setUpdateBox={setUpdateBox} entry={selectedEntry} event={event} />
+      }
+
+      {showDeleteBox && isAuthenticated &&
+        <DeleteConfirmation setDeleteBox={setDeleteBox} entry={selectedEntry} event={event} />
       }
 
       <h2 className="results__title">Results for {event.toUpperCase()}</h2>
@@ -177,16 +162,6 @@ const Results: React.FC<ResultsProps> = ({ isAuthenticated }) => {
                 Mo3/Ao5 {sortField === 'mean' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
 
-              {isAuthenticated &&
-              <>
-                <th className="results__header-cell">
-                  Delete
-                </th>
-                <th className="results__header-cell">
-                  Edit
-                </th>
-              </>
-              }
             </tr>
           </thead>
           <tbody className="results__tbody">
@@ -209,14 +184,15 @@ const Results: React.FC<ResultsProps> = ({ isAuthenticated }) => {
                 <>
                   <td className='results__cell'>
                     <button onClick={()=>{
-                      handleDeleteParticipant(participant.id);
-                    }}>Delete</button>
-                  </td>
-                  <td>
-                    <button onClick={()=>{
                       setUpdateBox(true);
                       setSelectedEntry(participant);
-                    }} className='results__cell'>UpdateUser</button>
+                    }} className='results__cell'>Edit</button>
+                  </td>
+                  <td className='results__cell'>
+                    <button className='results__cell' onClick={()=>{
+                      setDeleteBox(true);
+                      setSelectedEntry(participant);
+                    }}><MdDelete className='results__delete_icon' /></button>
                   </td>
                 </>
                 }

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { UPDATE_URL } from '../utils/constants';
-import "../styles/updateBox.css"
+import "../styles/updateBox.css";
+import { IoClose } from "react-icons/io5";
 
 interface Participant {
     id?: number; // Optional ID for the participant
@@ -56,9 +57,11 @@ const UpdateBox: React.FC<Props> = ({setUpdateBox, entry, event}) => {
       <div className='container'>
         <div className='sub-container'>
             <div className='close-btn-container'>
-              <button onClick={()=>{
+              <button
+                className='close-btn'
+                onClick={()=>{
                 setUpdateBox(false);
-              }}>Close</button>
+              }}><IoClose className='close-btn-icon' /></button>
             </div>
             <div className='input-container' >
                 <input

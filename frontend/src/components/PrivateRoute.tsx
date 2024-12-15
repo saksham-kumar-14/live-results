@@ -6,8 +6,8 @@ interface PrivateRouteProps {
   isAuthenticated: Boolean;
 }
 
-
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ isAuthenticated, children }) => {
+  //alert(isAuthenticated);
 
   return isAuthenticated ? (
     <>{children}</>
@@ -17,4 +17,3 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ isAuthenticated, children }
 };
 
 export default PrivateRoute;
-

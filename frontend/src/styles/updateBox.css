@@ -6,7 +6,7 @@
 }
 
 .sub-container{
-    padding: 6px;
+    padding: 12px 18px;
     border-radius: 16px;
     background-color: #1a1a1a;
     display: flex;
@@ -46,7 +46,13 @@
     width: 60vw;
     margin: 10px;
 }
-@media only screen and max (max-width: 768px) {
+
+.close-btn-icon{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+@media only screen and (max-width: 768px) {
     .input-container input{
         width: 90vw;
     }

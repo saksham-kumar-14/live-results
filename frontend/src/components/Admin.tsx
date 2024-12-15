@@ -3,7 +3,7 @@ import "../styles/Admin.css"
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { ADMIN_AUTH_URL } from '../utils/constants';
-import '../styles/Admin.css'
+import '../styles/Admin.css';
 
 interface AdminProps {
   isAuthenticated: Boolean;
@@ -34,7 +34,8 @@ const Admin: React.FC<AdminProps> = ({isAuthenticated, setIsAuthenticated}) => {
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem('passwordToken');
-  };
+  }
+  
 
   return (
     <div className='container'>
@@ -43,7 +44,7 @@ const Admin: React.FC<AdminProps> = ({isAuthenticated, setIsAuthenticated}) => {
           <>
             <div className="welcome-container">
               <h2>Welcome, Admin!</h2>
-              <button onClick={handleLogout}>Logout</button>
+              <button onClick={handleLogout} >Logout</button>
             </div>
             <div className='header-container'>
               <Link to="/data/3x3">
